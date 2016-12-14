@@ -60,12 +60,13 @@
 
 	//获取城市数据
 	var cities = __webpack_require__(3);
+	//ES6原生模块
 
 	//将城市数据传给city module
 	var cityComponent = new _city2.default(cities);
 
 	$('.data-city').on('click', function () {
-	    var el = $(this);
+	    var el = this;
 	    //city module callback
 	    cityComponent.show(function (data) {
 	        el.html(data);
@@ -90,21 +91,24 @@
 	    function City(data) {
 	        _classCallCheck(this, City);
 
+	        //获取传递进来的参数（数据）
 	        this.data = data;
+	        //查找dom。并缓存以供后面使用
 	        this.component = document.querySelector('.pick-city');
-
+	        //初始化
 	        this.init();
 	    }
 
 	    _createClass(City, [{
 	        key: 'init',
 	        value: function init() {
+	            //根据数据来渲染，返回字符串，应用ES6的模板字符串
 	            this.render();
-
+	            //生成dom
 	            $(this.component).html(this.tpl);
-
+	            //获取每一个字母title的dom距离文档顶端的高度，得到一个对象{"A":189,"B":342}
 	            this.getPosition();
-
+	            //绑定事件
 	            this.bindEvent();
 	        }
 	    }, {
@@ -112,14 +116,18 @@
 	        value: function bindEvent() {
 	            var that = this;
 	            var scroller = this.component.querySelector('.city-content');
+	            //city 组件的隐藏 通过回退箭头来触发
 	            this.component.querySelector('.back').onclick = function () {
 	                this.hide();
 	            }.bind(this);
+	            //给侧边栏的字母表绑定事件，根据getPosition得到的对象数据改变scrollTop的值
 	            $(this.component).on('click', '.target-alpha', function () {
 	                scroller.scrollTop = that.heights[$(this).html()] - 45;
 	            });
+	            //给所有的城市绑定事件，获取顶级对象文本，传给回调函数
 	            $(this.component).on('click', '[city]', function () {
-	                that.callback($(this).attr('city'));
+	                that.callback(this.attr('city'));
+	                //调用hide函数，隐藏组件
 	                that.hide();
 	            });
 	        }
@@ -131,7 +139,6 @@
 	                heights[$(this).attr('alpha')] = $(this).offset().top;
 	            });
 	            this.heights = heights;
-	            console.log(heights);
 	        }
 	    }, {
 	        key: 'show',
@@ -166,6 +173,7 @@
 	            this.hotlist = str2;
 	            //根据citylist渲染整个城市数据
 	            var citylist = this.classifyData;
+	            console.log(JSON.stringify(this.classifyData));
 	            citylist.forEach(function (v, i) {
 	                str3 += '<div class="city-alpha-list">\n                    <p class="city-title" alpha="' + v.alpha + '">' + v.alpha + '</p>\n                    <ul class="city-area">\n                        {list}\n                    </ul>\n                </div>';
 	                var str4 = '';
