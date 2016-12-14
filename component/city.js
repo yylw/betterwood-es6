@@ -6,22 +6,46 @@ class City {
         this.init();
     }
 
-    bindEvent() {
-        this.component.querySelector('.back').onclick = function () {
-            this.hide();
-        }.bind(this)
-    }
-
     init() {
         this.render();
 
         $(this.component).html(this.tpl);
 
+        this.getPosition();
+
         this.bindEvent();
     }
 
-    show() {
+    bindEvent() {
+        let that = this;
+        let scroller = this.component.querySelector('.city-content');
+        this.component.querySelector('.back').onclick = function () {
+            this.hide();
+        }.bind(this);
+        $(this.component).on('click','.target-alpha',function () {
+            scroller.scrollTop=that.heights[$(this).html()]-45;
+        });
+        $(this.component).on('click','[city]',function () {
+            that.callback($(this).attr('city'));
+            that.hide()
+        })
+    }
+
+    getPosition(){
+        let heights = {};
+        $(this.component).find('[alpha]').each(function (index,value) {
+            heights[$(this).attr('alpha')] = $(this).offset().top;
+        });
+        this.heights = heights;
+        console.log(heights);
+
+    }
+
+    show(callback) {
         this.component.className += ' plugin-active';
+        this.callback = callback || function () {
+                console.log('你没有写回调函数，请在show方法中添加')
+            }
     }
 
     hide() {
@@ -33,27 +57,27 @@ class City {
         let alpha = this.getAlphabet();
         let str='',str2='',str3='';
         alpha.forEach((value,index)=>{
-            str+=`<span>${value}</span>`
+            str+=`<span class="target-alpha">${value}</span>`
         });
         this.alphalist = str;
         //获取hotlist数据，然后渲染
         let hotlist = this.data.hotList;
         hotlist.forEach((value,index)=>{
-            str2+=`<span>${value[0]}</span>`
+            str2+=`<span city="${value[0]}">${value[0]}</span>`
         });
         this.hotlist = str2;
         //根据citylist渲染整个城市数据
         let citylist = this.classifyData;
         citylist.forEach((v,i)=>{
             str3+=`<div class="city-alpha-list">
-                    <p class="city-title">${v.alpha}</p>
+                    <p class="city-title" alpha="${v.alpha}">${v.alpha}</p>
                     <ul class="city-area">
                         \{list\}
                     </ul>
                 </div>`;
             let str4 ='';
             v['data'].forEach((val,idx)=>{
-                str4+=`<li>${val[0]}</li>`
+                str4+=`<li city="${val[0]}">${val[0]}</li>`
             });
             str3 = str3.replace('{list}',str4);
         });

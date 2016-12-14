@@ -4,11 +4,17 @@ new swipe('.swiper-container',{
     loop:true
 });
 
-var cities = require('../data/cityData');
 
+//获取城市数据
+let cities = require('../data/cityData');
 import City from '../component/city';
-var cityComponent = new City(cities);
+//将城市数据传给city module
+let cityComponent = new City(cities);
 
 $('.data-city').on('click',function () {
-    cityComponent.show();
+    var el = $(this);
+    //city module callback
+    cityComponent.show(function (data) {
+        el.html(data);
+    });
 });

@@ -34,6 +34,7 @@
 .data-area{
   padding-left: 10px;
   background: #FFFFFF;
+  overflow: hidden;
   .data-area-item{
     position: relative;
     height: 70px;
@@ -68,7 +69,7 @@
       position: relative;
       height: 100%;
       width: 25px;
-      @include rightArrow($color:$primary-color,$bgColor:$basebg);
+      @include rightArrow($color:$primary-color,$bgColor:#fff);
     }
   }
 }
