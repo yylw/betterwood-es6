@@ -112,7 +112,8 @@ html, body {
   line-height: 45px;
   background: #FFFFFF;
   text-align: center;
-  position: absolute; }
+  position: absolute;
+  box-shadow: 0 0 4px #ccc; }
   .header .left-arrow {
     height: 100%;
     width: 50px;
@@ -785,17 +786,17 @@ button.swiper-pagination-bullet {
     text-align: center;
     line-height: 40px; }
   .date-component .day {
-    background: lightcyan;
-    color: #333; }
+    background: #009688;
+    color: #FFFFFF; }
   .date-component .to-gray {
-    background: lightgray;
-    color: #999; }
+    color: #555; }
   .date-component .calendar-days {
     position: absolute;
-    top: 40px;
+    top: 45px;
     bottom: 0;
     overflow: auto;
-    width: 100%; }
+    width: 100%;
+    padding-top: 10px; }
 
 .banner {
   height: 135px;

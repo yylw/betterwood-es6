@@ -23,9 +23,12 @@ $('.data-city').on('click',function () {
 //引用calendar组件，通过ES6模块
 import Calendar from '../component/calendar';
 //实例化calendar组件
-let cal = new Calendar('2016-12',3);
+let cal = new Calendar({
+    initDate: new Date(),
+    count: 3
+});
 $('.data-live-in').on('click',function () {
-    var el = $(this);
+    let el = $(this);
     cal.show(function (date) {
         el.html(date)
     })

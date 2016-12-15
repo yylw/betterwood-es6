@@ -80,7 +80,10 @@
 	//引用calendar组件，通过ES6模块
 
 	//实例化calendar组件
-	var cal = new _calendar2.default('2016-12', 3);
+	var cal = new _calendar2.default({
+	    initDate: new Date('2017.1'),
+	    count: 6
+	});
 	$('.data-live-in').on('click', function () {
 	    var el = $(this);
 	    cal.show(function (date) {
@@ -252,17 +255,35 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Calendar = function () {
-	    function Calendar() {
+	    function Calendar(options) {
 	        _classCallCheck(this, Calendar);
 
+	        this.options = options;
 	        this.component = document.querySelector('.pick-date');
-	        var wrap = document.querySelector('.calendar-days');
-	        this.wrap = wrap;
-	        wrap.innerHTML = this.renderOneMonth(2016, 10) + this.renderOneMonth(2016, 11) + this.renderOneMonth(2016, 12);
+	        this.render();
 	        this.bindEvent();
 	    }
 
 	    _createClass(Calendar, [{
+	        key: 'render',
+	        value: function render() {
+	            var opt = this.options;
+	            var initYear = opt.initDate.getFullYear();
+	            var initMonth = opt.initDate.getMonth();
+
+	            if (opt.count) {
+	                var str = '';
+	                for (var i = 0; i < opt.count; i++) {
+	                    //由于月份在循环中会出现大于12的情况，此处利用日期对象的容错重新处理日期
+	                    var resetMonth = new Date(initYear, initMonth + i).getMonth() + 1;
+	                    var resetYear = new Date(initYear, initMonth + i).getFullYear();
+	                    str += this.renderOneMonth(resetYear, resetMonth);
+	                }
+
+	                this.component.innerHTML = '<div class="date-component">\n                    <header class="header">\n                        <span class="left-arrow back"></span>\n                        <h2>\u9009\u62E9\u65E5\u671F</h2>\n                    </header>\n                    <div class="calendar-days">\n                        ' + str + '    \n                    </div>\n                </div>';
+	            }
+	        }
+	    }, {
 	        key: 'hide',
 	        value: function hide() {
 	            this.component.className = this.component.className.replace(/\s?plugin-active/, '');
@@ -279,9 +300,11 @@
 	        key: 'bindEvent',
 	        value: function bindEvent() {
 	            var that = this;
-	            this.wrap.addEventListener('click', function (e) {
+	            var wrap = this.component.querySelector('.calendar-days');
+	            wrap.addEventListener('click', function (e) {
 	                var day = 0;
 	                if (e.target.tagName.toUpperCase() == 'LI') {
+	                    if (e.target.className.indexOf('to-gray') > -1) return;
 	                    day = e.target.innerHTML;
 	                    that.selectedDate = e.target.parentNode.getAttribute('date') + '-' + day;
 	                    that.callback(that.selectedDate);
@@ -292,10 +315,11 @@
 	    }, {
 	        key: 'renderOneMonth',
 	        value: function renderOneMonth(year, month) {
+	            //month{1,12}
 	            var bd = this.getWeekIndex(year, month);
 	            var d = this.getDays(year, month);
 	            var ad = 42 - d - bd;
-	            console.log(ad);
+
 	            var start = this.getBeforeDay(year, month);
 	            var str = '';
 	            for (var i = 0; i < bd; i++) {
@@ -307,7 +331,7 @@
 	            for (var k = 0; k < ad; k++) {
 	                str += '<li class="day to-gray">' + (1 + k) + '</li>';
 	            }
-	            return '<ul date="' + year + '-' + month + '" class="m-date clearfix">' + str + '</ul>';
+	            return '\n        <div class="date-item">\n            <p>' + year + '\u5E74' + month + '\u6708</p>\n            <p class="week">\n                <span>\u65E5</span>\n                <span>\u4E00</span>\n                <span>\u4E8C</span>\n                <span>\u4E09</span>\n                <span>\u56DB</span>\n                <span>\u4E94</span>\n                <span>\u516D</span>\n            </p>\n            <ul date="' + year + '-' + month + '" class="m-date clearfix">' + str + '</ul>\n        </div>';
 	        }
 	    }, {
 	        key: 'getBeforeDay',

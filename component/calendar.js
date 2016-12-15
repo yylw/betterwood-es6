@@ -1,10 +1,35 @@
 class Calendar{
-    constructor(){
+    constructor(options){
+        this.options = options;
         this.component = document.querySelector('.pick-date');
-        let wrap = document.querySelector('.calendar-days');
-        this.wrap = wrap;
-        wrap.innerHTML = this.renderOneMonth(2016,10)+this.renderOneMonth(2016,11)+this.renderOneMonth(2016,12);
+        this.render();
         this.bindEvent();
+    }
+
+    render(){
+        let opt = this.options;
+        const initYear = opt.initDate.getFullYear();
+        const initMonth = opt.initDate.getMonth();
+
+        if(opt.count){
+            let str ='';
+            for(let i=0; i<opt.count; i++){
+                //由于月份在循环中会出现大于12的情况，此处利用日期对象的容错重新处理日期
+                let resetMonth = new Date(initYear,initMonth+i).getMonth()+1;
+                let resetYear = new Date(initYear,initMonth+i).getFullYear();
+                str += this.renderOneMonth(resetYear,resetMonth)
+            }
+
+            this.component.innerHTML =  `<div class="date-component">
+                    <header class="header">
+                        <span class="left-arrow back"></span>
+                        <h2>选择日期</h2>
+                    </header>
+                    <div class="calendar-days">
+                        ${str}    
+                    </div>
+                </div>`;
+        }
     }
 
     hide(){
@@ -20,23 +45,24 @@ class Calendar{
 
     bindEvent(){
         let that = this;
-        this.wrap.addEventListener('click',function (e) {
+        let wrap = this.component.querySelector('.calendar-days');
+        wrap.addEventListener('click',function (e) {
             let day = 0;
             if(e.target.tagName.toUpperCase() == 'LI'){
+                if(e.target.className.indexOf('to-gray')>-1) return;
                 day = e.target.innerHTML;
                 that.selectedDate = e.target.parentNode.getAttribute('date')+'-'+day;
                 that.callback(that.selectedDate);
                 that.hide()
             }
-
         })
     }
 
-    renderOneMonth(year,month){
+    renderOneMonth(year,month){//month{1,12}
         let bd = this.getWeekIndex(year,month);
         let d = this.getDays(year,month);
         let ad = 42-d-bd;
-        console.log(ad);
+
         let start = this.getBeforeDay(year,month);
         let str = '';
         for(let i=0; i<bd; i++){
@@ -48,7 +74,20 @@ class Calendar{
         for(let k=0; k<ad; k++){
             str+='<li class="day to-gray">'+(1+k)+'</li>'
         }
-        return `<ul date="${year}-${month}" class="m-date clearfix">${str}</ul>`
+        return `
+        <div class="date-item">
+            <p>${year}年${month}月</p>
+            <p class="week">
+                <span>日</span>
+                <span>一</span>
+                <span>二</span>
+                <span>三</span>
+                <span>四</span>
+                <span>五</span>
+                <span>六</span>
+            </p>
+            <ul date="${year}-${month}" class="m-date clearfix">${str}</ul>
+        </div>`
     }
 
     getBeforeDay(year,month){

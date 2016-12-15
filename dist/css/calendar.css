@@ -11,16 +11,16 @@
     text-align: center;
     line-height: 40px; }
   .date-component .day {
-    background: lightcyan;
-    color: #333; }
+    background: #009688;
+    color: #FFFFFF; }
   .date-component .to-gray {
-    background: lightgray;
-    color: #999; }
+    color: #555; }
   .date-component .calendar-days {
     position: absolute;
-    top: 40px;
+    top: 45px;
     bottom: 0;
     overflow: auto;
-    width: 100%; }
+    width: 100%;
+    padding-top: 10px; }
 
 /*# sourceMappingURL=calendar.css.map */
