@@ -32,7 +32,7 @@ class City {
         });
         //给所有的城市绑定事件，获取顶级对象文本，传给回调函数
         $(this.component).on('click','[city]',function () {
-            that.callback(this.attr('city'));
+            that.callback(this.getAttribute('city'));
             //调用hide函数，隐藏组件
             that.hide()
         })

@@ -50,16 +50,20 @@
 
 	var _city2 = _interopRequireDefault(_city);
 
+	var _calendar = __webpack_require__(2);
+
+	var _calendar2 = _interopRequireDefault(_calendar);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var swipe = __webpack_require__(2);
+	var swipe = __webpack_require__(3);
 	new swipe('.swiper-container', {
 	    autoplay: 3000,
 	    loop: true
 	});
 
 	//获取城市数据
-	var cities = __webpack_require__(3);
+	var cities = __webpack_require__(4);
 	//ES6原生模块
 
 	//将城市数据传给city module
@@ -69,7 +73,18 @@
 	    var el = this;
 	    //city module callback
 	    cityComponent.show(function (data) {
-	        el.html(data);
+	        el.innerHTML = data;
+	    });
+	});
+
+	//引用calendar组件，通过ES6模块
+
+	//实例化calendar组件
+	var cal = new _calendar2.default('2016-12', 3);
+	$('.data-live-in').on('click', function () {
+	    var el = $(this);
+	    cal.show(function (date) {
+	        el.html(date);
 	    });
 	});
 
@@ -126,7 +141,7 @@
 	            });
 	            //给所有的城市绑定事件，获取顶级对象文本，传给回调函数
 	            $(this.component).on('click', '[city]', function () {
-	                that.callback(this.attr('city'));
+	                that.callback(this.getAttribute('city'));
 	                //调用hide函数，隐藏组件
 	                that.hide();
 	            });
@@ -166,15 +181,15 @@
 	            });
 	            this.alphalist = str;
 	            //获取hotlist数据，然后渲染
-	            var hotlist = this.data.hotList;
-	            hotlist.forEach(function (value, index) {
+	            var hotList = this.data.hotList;
+	            hotList.forEach(function (value, index) {
 	                str2 += '<span city="' + value[0] + '">' + value[0] + '</span>';
 	            });
-	            this.hotlist = str2;
-	            //根据citylist渲染整个城市数据
-	            var citylist = this.classifyData;
-	            console.log(JSON.stringify(this.classifyData));
-	            citylist.forEach(function (v, i) {
+	            this.hotList = str2;
+	            //根据cityList渲染整个城市数据
+	            var cityList = this.classifyData;
+
+	            cityList.forEach(function (v, i) {
 	                str3 += '<div class="city-alpha-list">\n                    <p class="city-title" alpha="' + v.alpha + '">' + v.alpha + '</p>\n                    <ul class="city-area">\n                        {list}\n                    </ul>\n                </div>';
 	                var str4 = '';
 	                v['data'].forEach(function (val, idx) {
@@ -183,8 +198,8 @@
 	                str3 = str3.replace('{list}', str4);
 	            });
 
-	            this.citylist = str3;
-	            this.tpl = '<div class="city-component">\n        <header class="header">\n            <span class="left-arrow back"></span>\n            <h2>\u9009\u62E9\u57CE\u5E02</h2>\n        </header>\n        <div class="city-content">\n            <div class="city-wrap-hot">\n                <div class="city-title">\u70ED\u95E8\u57CE\u5E02</div>\n                <div class="city-area clearfix">\n                    ' + this.hotlist + '\n                </div>\n            </div>\n            <div class="city-wrap">\n                ' + this.citylist + '\n            </div>\n        </div>\n        <div class="city-alphabet">\n            ' + this.alphalist + '\n        </div>\n    </div>';
+	            this.cityList = str3;
+	            this.tpl = '<div class="city-component">\n        <header class="header">\n            <span class="left-arrow back"></span>\n            <h2>\u9009\u62E9\u57CE\u5E02</h2>\n        </header>\n        <div class="city-content">\n            <div class="city-wrap-hot">\n                <div class="city-title">\u70ED\u95E8\u57CE\u5E02</div>\n                <div class="city-area clearfix">\n                    ' + this.hotList + '\n                </div>\n            </div>\n            <div class="city-wrap">\n                ' + this.cityList + '\n            </div>\n        </div>\n        <div class="city-alphabet">\n            ' + this.alphalist + '\n        </div>\n    </div>';
 	        }
 	    }, {
 	        key: 'getAlphabet',
@@ -224,6 +239,122 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Calendar = function () {
+	    function Calendar() {
+	        _classCallCheck(this, Calendar);
+
+	        this.component = document.querySelector('.pick-date');
+	        var wrap = document.querySelector('.calendar-days');
+	        this.wrap = wrap;
+	        wrap.innerHTML = this.renderOneMonth(2016, 10) + this.renderOneMonth(2016, 11) + this.renderOneMonth(2016, 12);
+	        this.bindEvent();
+	    }
+
+	    _createClass(Calendar, [{
+	        key: 'hide',
+	        value: function hide() {
+	            this.component.className = this.component.className.replace(/\s?plugin-active/, '');
+	        }
+	    }, {
+	        key: 'show',
+	        value: function show(callback) {
+	            this.component.className += ' plugin-active';
+	            this.callback = callback || function () {
+	                console.log('你没有写回调函数，请在show方法中添加');
+	            };
+	        }
+	    }, {
+	        key: 'bindEvent',
+	        value: function bindEvent() {
+	            var that = this;
+	            this.wrap.addEventListener('click', function (e) {
+	                var day = 0;
+	                if (e.target.tagName.toUpperCase() == 'LI') {
+	                    day = e.target.innerHTML;
+	                    that.selectedDate = e.target.parentNode.getAttribute('date') + '-' + day;
+	                    that.callback(that.selectedDate);
+	                    that.hide();
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'renderOneMonth',
+	        value: function renderOneMonth(year, month) {
+	            var bd = this.getWeekIndex(year, month);
+	            var d = this.getDays(year, month);
+	            var ad = 42 - d - bd;
+	            console.log(ad);
+	            var start = this.getBeforeDay(year, month);
+	            var str = '';
+	            for (var i = 0; i < bd; i++) {
+	                str += '<li class="day to-gray">' + (start + i) + '</li>';
+	            }
+	            for (var j = 0; j < d; j++) {
+	                str += '<li class="day">' + (1 + j) + '</li>';
+	            }
+	            for (var k = 0; k < ad; k++) {
+	                str += '<li class="day to-gray">' + (1 + k) + '</li>';
+	            }
+	            return '<ul date="' + year + '-' + month + '" class="m-date clearfix">' + str + '</ul>';
+	        }
+	    }, {
+	        key: 'getBeforeDay',
+	        value: function getBeforeDay(year, month) {
+	            var _ref = [this.getDays(year, month - 1), this.getWeekIndex(year, month)],
+	                beforeDays = _ref[0],
+	                leftDays = _ref[1];
+
+	            return beforeDays - leftDays + 1;
+	        }
+	    }, {
+	        key: 'getWeekIndex',
+	        value: function getWeekIndex(year, month) {
+	            return new Date(year, month - 1, 1).getDay();
+	        }
+	    }, {
+	        key: 'getDays',
+	        value: function getDays(year, month) {
+	            if (month < 1) {
+	                year--;
+	                month = 12;
+	            }
+	            var days = 0;
+	            var arr = [1, 3, 5, 7, 8, 10, 12],
+	                arr2 = [4, 6, 9, 11];
+	            if (arr.indexOf(month) > -1) {
+	                days = 31;
+	            } else if (arr2.indexOf(month) > -1) {
+	                days = 30;
+	            } else {
+	                if (year % 400 == 0 || year % 100 != 0 && year % 4 == 0) {
+	                    days = 29;
+	                } else {
+	                    days = 28;
+	                }
+	            }
+	            return days;
+	        }
+	    }]);
+
+	    return Calendar;
+	}();
+
+	exports.default = Calendar;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5255,7 +5386,7 @@
 	//# sourceMappingURL=maps/swiper.js.map
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";

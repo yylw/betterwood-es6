@@ -1,0 +1,31 @@
+.date-component{
+  width: 100%;
+  .m-date{
+    margin-bottom: 20px;
+  }
+  .week{
+    width: 100%;
+  }
+  .day,.week span{
+    float: left;
+    width: 14.2857%;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+  }
+  .day{
+    background: lightcyan;
+    color: #333;
+  }
+  .to-gray{
+    background: lightgray;
+    color: #999;
+  }
+  .calendar-days{
+    position: absolute;
+    top: 40px;
+    bottom: 0;
+    overflow: auto;
+    width: 100%;
+  }
+}

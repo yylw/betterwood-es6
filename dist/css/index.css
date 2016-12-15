@@ -772,6 +772,31 @@ button.swiper-pagination-bullet {
       height: 4.54545%;
       width: 26px; }
 
+.date-component {
+  width: 100%; }
+  .date-component .m-date {
+    margin-bottom: 20px; }
+  .date-component .week {
+    width: 100%; }
+  .date-component .day, .date-component .week span {
+    float: left;
+    width: 14.2857%;
+    height: 40px;
+    text-align: center;
+    line-height: 40px; }
+  .date-component .day {
+    background: lightcyan;
+    color: #333; }
+  .date-component .to-gray {
+    background: lightgray;
+    color: #999; }
+  .date-component .calendar-days {
+    position: absolute;
+    top: 40px;
+    bottom: 0;
+    overflow: auto;
+    width: 100%; }
+
 .banner {
   height: 135px;
   width: 100%;

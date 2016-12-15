@@ -16,7 +16,17 @@ $('.data-city').on('click',function () {
     let el = this;
     //city module callback
     cityComponent.show(function (data) {
-        el.html(data);
+        el.innerHTML = data;
     });
 });
 
+//引用calendar组件，通过ES6模块
+import Calendar from '../component/calendar';
+//实例化calendar组件
+let cal = new Calendar('2016-12',3);
+$('.data-live-in').on('click',function () {
+    var el = $(this);
+    cal.show(function (date) {
+        el.html(date)
+    })
+});
