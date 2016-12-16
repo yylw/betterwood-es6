@@ -56,6 +56,7 @@ $('.search').on('click',function () {
         dialog.alert('请您选择完整信息',function () {
             
         })
-    } 
-    
+    }
 });
+
+
