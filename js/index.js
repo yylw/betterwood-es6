@@ -5,6 +5,12 @@ new swipe('.swiper-container',{
 });
 
 
+//通过ES6模块,引用dialog组件
+import Dialog from '../component/dialog';
+//实例化
+let dialog = new Dialog({});
+
+
 //获取城市数据
 let cities = require('../data/cityData');
 //ES6原生模块
@@ -32,4 +38,24 @@ $('.data-live-in').on('click',function () {
     cal.show(function (date) {
         el.html(date)
     })
+});
+$('.data-leave').on('click',function () {
+    let el = $(this);
+    cal.show(function (date) {
+        el.html(date)
+    })
+});
+
+$('.search').on('click',function () {
+    let city = $('.data-city').html().trim(),
+        liveIn = $('.data-live-in').html().trim(),
+        leave = $('.data-leave').html().trim();
+    if(city && liveIn && leave){
+        location.href = encodeURI(`list.html?city=${city}&dateLiveIn=${liveIn}&dateLeave=${leave}`);
+    }else{
+        dialog.alert('请您选择完整信息',function () {
+            
+        })
+    } 
+    
 });

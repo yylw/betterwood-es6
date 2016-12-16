@@ -46,24 +46,33 @@
 
 	'use strict';
 
-	var _city = __webpack_require__(1);
+	var _dialog = __webpack_require__(1);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	var _city = __webpack_require__(2);
 
 	var _city2 = _interopRequireDefault(_city);
 
-	var _calendar = __webpack_require__(2);
+	var _calendar = __webpack_require__(3);
 
 	var _calendar2 = _interopRequireDefault(_calendar);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var swipe = __webpack_require__(3);
+	var swipe = __webpack_require__(4);
 	new swipe('.swiper-container', {
 	    autoplay: 3000,
 	    loop: true
 	});
 
+	//通过ES6模块,引用dialog组件
+
+	//实例化
+	var dialog = new _dialog2.default({});
+
 	//获取城市数据
-	var cities = __webpack_require__(4);
+	var cities = __webpack_require__(5);
 	//ES6原生模块
 
 	//将城市数据传给city module
@@ -81,8 +90,8 @@
 
 	//实例化calendar组件
 	var cal = new _calendar2.default({
-	    initDate: new Date('2017.1'),
-	    count: 6
+	    initDate: new Date(),
+	    count: 3
 	});
 	$('.data-live-in').on('click', function () {
 	    var el = $(this);
@@ -90,9 +99,137 @@
 	        el.html(date);
 	    });
 	});
+	$('.data-leave').on('click', function () {
+	    var el = $(this);
+	    cal.show(function (date) {
+	        el.html(date);
+	    });
+	});
+
+	$('.search').on('click', function () {
+	    var city = $('.data-city').html().trim(),
+	        liveIn = $('.data-live-in').html().trim(),
+	        leave = $('.data-leave').html().trim();
+	    if (city && liveIn && leave) {
+	        location.href = encodeURI('list.html?city=' + city + '&dateLiveIn=' + liveIn + '&dateLeave=' + leave);
+	    } else {
+	        dialog.alert('请您选择完整信息', function () {});
+	    }
+	});
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var Dialog = function Dialog(obj) {
+
+	    if (obj.parent == undefined) {
+	        obj.parent = document.body;
+	    } else {
+	        obj.parent = document.querySelector(obj.parent);
+	    }
+
+	    if (obj.feedback) {
+	        this.feedback = obj.feedback;
+	    }
+
+	    if (!obj.parent.querySelector('.mask-layer')) {
+	        var maskDom = document.createElement('div');
+	        maskDom.className = 'mask-layer';
+	        obj.parent.appendChild(maskDom);
+	        this.mask = maskDom;
+	    } else {
+	        this.mask = obj.parent.querySelector('.mask-layer');
+	    }
+
+	    if (!obj.parent.querySelector('.dialog')) {
+	        var dom = document.createElement('div');
+	        dom.className = 'dialog';
+	        obj.parent.appendChild(dom);
+	        this.wrap = dom;
+	    } else {
+	        this.wrap = obj.parent.querySelector('.dialog');
+	    }
+	    this.title = obj.title || '提示信息';
+	    if (obj.tpl) {
+	        this.rplDirect = true;
+	    }
+	    this.tpl = obj.tpl || '<div class="dialog-wrap"><div class="dialog-title">{{title}}</div><div class="dialog-content"><div class="dialog-info">{{information}}</div><div class="dialog-btns">{{btn}}</div></div></div>';
+
+	    this.init();
+	};
+	Dialog.prototype = {
+	    init: function init() {
+	        this.tpl = this.tpl.replace('{{title}}', this.title);
+	    },
+	    alert: function alert(msg, callback) {
+	        if (!this.rplDirect) {
+	            this.tpl = this.tpl.replace('{{information}}', msg).replace("{{btn}}", "<span class='dialog-btn ok'>确定</span>");
+	        }
+
+	        this.wrap.innerHTML = this.tpl;
+
+	        this.show();
+
+	        this.callback = !!callback ? callback : function () {};
+	        this.bindEvent();
+	    },
+	    confirm: function confirm(msg, callback) {
+	        if (!this.rplDirect) {
+	            this.tpl = this.tpl.replace('{{information}}', msg).replace('{{btn}}', '<span class="dialog-btn ok">确定</span><span class="dialog-btn cancel">取消</span>');
+	        }
+	        this.wrap.innerHTML = this.tpl;
+	        this.show();
+
+	        this.callback = !!callback ? callback : function () {};
+	        this.bindEvent();
+	    },
+	    bindEvent: function bindEvent() {
+	        this.wrap.querySelector('.ok').addEventListener('click', function () {
+	            this.hide();
+	            this.callback();
+	        }.bind(this), false);
+	        if (this.wrap.querySelector('.cancel')) {
+	            this.wrap.querySelector('.cancel').addEventListener('click', function () {
+	                this.hide();
+	            }.bind(this), false);
+	        }
+	    },
+	    show: function show() {
+	        this.wrap.className = this.wrap.className += ' dialog-active';
+	        this.mask.className = this.mask.className += ' mask-show';
+	        setTimeout(function () {
+	            this.mask.style.opacity = '0.7';
+	        }.bind(this), 10);
+	        this.flag = false;
+	        this.feedback && this.feedback(this.wrap.querySelector('.dialog-wrap'));
+	    },
+	    _hide: function _hide() {
+	        if (this.flag) {
+	            this.wrap.className = this.wrap.classList[0];
+	            this.mask.className = this.mask.classList[0];
+	            this.destroy();
+	        }
+	    },
+	    hide: function hide() {
+	        this.mask.style.opacity = 0;
+	        this.mask.addEventListener('webkitTransitionEnd', this._hide.bind(this), false);
+	        this.flag = true;
+	    },
+	    destroy: function destroy() {
+	        this.wrap.innerHTML = '';
+	    }
+	};
+
+	exports.default = Dialog;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -241,7 +378,7 @@
 	exports.default = City;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -378,7 +515,7 @@
 	exports.default = Calendar;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5410,7 +5547,7 @@
 	//# sourceMappingURL=maps/swiper.js.map
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";

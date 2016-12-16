@@ -3,6 +3,7 @@
 @import "swiper";
 @import "city";
 @import "calendar";
+@import "dialog";
 .banner{
   height: 135px;
   width: 100%;
@@ -41,6 +42,8 @@
     height: 70px;
     line-height: 70px;
     border-bottom: 1px solid #eee;
+    display: flex;
+    display: -webkit-box;
     span{
       float: left;
     }
@@ -60,10 +63,13 @@
       }
     }
     .data-city{
-      width: 60%;
       color: $primary-color;
       font-size: 20.4px;
       text-indent: 12.5px;
+    }
+    .data-live-in,.data-leave,.data-city{
+      flex:1;
+      -webkit-box-flex: 1;
     }
     .right-arrow{
       float: right;

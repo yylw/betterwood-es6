@@ -1,0 +1,15 @@
+@import "reset";
+@import "common";
+@import "calendar";
+@import "dialog";
+.list{
+  .list-pick-date{
+    height: 40px;
+    line-height: 40px;
+    span{
+      float: left;
+      width: 50%;
+      text-align: center;
+    }
+  }
+}
