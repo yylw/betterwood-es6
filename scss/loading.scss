@@ -31,6 +31,7 @@
     .lc#{$i}{
       transform-origin: 30px 30px;
       transform: rotate($i*45deg);
+      opacity: $i*0.125;
     }
 
   }

@@ -35,5 +35,6 @@ module.exports={
             jQuery:"jquery",
             "window.jQuery":"jquery"
         })*/
+        new webpack.optimize.CommonsChunkPlugin('common.js')
     ]
 };

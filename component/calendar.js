@@ -1,6 +1,14 @@
 class Calendar{
     constructor(options){
-        this.options = options;
+        if(options){
+            this.options = options;
+        }else{
+            this.options = {
+                initDate:new Date(),
+                count:3
+            }
+        }
+
         this.component = document.querySelector('.pick-date');
         this.render();
         this.bindEvent();

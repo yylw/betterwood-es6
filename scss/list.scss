@@ -7,10 +7,54 @@
   .list-pick-date{
     height: 40px;
     line-height: 40px;
+    margin-top: 45px;
+    border-bottom: 2px solid #EBebeb;
     span{
       float: left;
       width: 50%;
+      height: 100%;
       text-align: center;
+    }
+  }
+
+  .hotel-list{
+    .hotel-item{
+      padding: 15px 10px;
+      @include flex;
+      dt{
+        height: 70px;
+        width: 70px;
+
+        img{
+          width: 100%;
+          height: 100%;}
+        
+      }
+      dd{
+        @include flexTo(1);
+        padding-left: 10px;
+        line-height: 1.7;
+        .hotel-title{
+          font-size: 1rem;
+          color: #333;
+          line-height: 1.1;
+        }
+        .hotel-score{
+          color: $orange;
+          .hotel-price{
+            float: right;
+          }
+        }
+        .hotel-grade{
+          color: #777;
+        }
+        .hotel-location{
+          color: #777;
+          .hotel-distance{
+            float: right;
+          }
+        }
+      }
     }
   }
 }

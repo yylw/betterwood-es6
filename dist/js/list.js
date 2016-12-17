@@ -1,48 +1,5 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
-/******/ 			return installedModules[moduleId].exports;
-
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			exports: {},
-/******/ 			id: moduleId,
-/******/ 			loaded: false
-/******/ 		};
-
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-
-
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
-
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(0);
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ 0:
+webpackJsonp([1],[
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51,18 +8,89 @@
 
 	var _loading2 = _interopRequireDefault(_loading);
 
+	var _dialog = __webpack_require__(1);
+
+	var _dialog2 = _interopRequireDefault(_dialog);
+
+	var _calendar = __webpack_require__(3);
+
+	var _calendar2 = _interopRequireDefault(_calendar);
+
+	var _util = __webpack_require__(7);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var loader = new _loading2.default();
-	loader.active();
+	//loader.active();
 
-	setTimeout(function () {
-	    loader.cancel();
-	}, 3000);
+	//通过ES6模块,引用dialog组件
+
+	//实例化
+	var dialog = new _dialog2.default({});
+
+	var calendar = new _calendar2.default({
+	    initDate: new Date(),
+	    count: 4
+	});
+
+	$('.list-date-in').html((0, _util.getUrlParams)('dateLiveIn')).on('click', function () {
+	    var el = $(this);
+	    calendar.show(function (data) {
+	        el.html(data);
+	    });
+	});
+	$('.list-date-out').html((0, _util.getUrlParams)('dateLeave')).on('click', function () {
+	    var el = $(this);
+	    calendar.show(function (data) {
+	        el.html(data);
+	    });
+	});
+
+	var data = [{ first: 'Jane', last: 'Bond' }, { first: 'Lars', last: 'Croft' }];
+	/*
+	let str='';
+	let fn = function (data) {
+	    return `<table>
+	        ${
+	            data.map(function (value,index) {return `<tr><td>${value.first}</td></tr>`})
+	        }
+	    </table>`
+	};
+
+	*/
+
+	/*const tmpl = addrs => `
+	  <table>
+	  ${addrs.map(addr => `
+	    <tr><td>${addr.first}</td></tr>
+	    <tr><td>${addr.last}</td></tr>
+	  `).join('')}
+	  </table>
+	`;*/
+
+	$.ajax('../data/hotel.json').done(function (data) {
+	    var res = data.result.hotel_list;
+	    console.log(template(res));
+	    $('.hotel-list').html(template(res));
+	});
+
+	var template = function template(data) {
+	    return ('' + data.map(function (value, index) {
+	        return '<dl class="hotel-item">\n            <dt><img src="../' + value.image + '" alt=""></dt>\n            <dd>\n                <p class="hotel-title">' + value.name + '</p>\n                <p class="hotel-score"><span>4.7\u5206 <em>\u793C</em> </span><span class="hotel-price">\uFFE5' + value.low_price / 100 + '<sub>\u8D77</sub></span></p>\n                <p class="hotel-grade"><span>' + value.stars + '</span></p>\n                <p class="hotel-location"><span>' + value.addr + '</span><span class="hotel-distance">' + value.distance + 'km</span></p>\n            </dd>\n        </dl>';
+	    }).join('')).trim();
+	};
+
+	/*
+	let tpl = ;
+	*/
 
 /***/ },
-
-/***/ 6:
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -84,7 +112,9 @@
 	            var el = document.createElement('div');
 	            el.className = 'mask-layer';
 	            document.body.appendChild(el);
+	            this.masker = el;
 	        }
+	        this.masker = ml;
 
 	        this.tpl = '\n    <ul class="">\n        <li class="loading-circle lc1"></li>\n        <li class="loading-circle lc2"></li>\n        <li class="loading-circle lc3"></li>\n        <li class="loading-circle lc4"></li>\n        <li class="loading-circle lc5"></li>\n        <li class="loading-circle lc6"></li>\n        <li class="loading-circle lc7"></li>\n        <li class="loading-circle lc8"></li>\n    </ul>\n'.trim();
 	    }
@@ -92,16 +122,15 @@
 	    _createClass(Loading, [{
 	        key: 'active',
 	        value: function active() {
-	            document.querySelector('.mask-layer').style.display = 'block';
-	            document.querySelector('.mask-layer').style.opacity = '.7';
+	            this.masker.style.cssText = 'opacity:1;display:block';
 	            var el = document.createElement('div');
 	            el.className = 'load-wrap';
 	            el.innerHTML = this.tpl;
 	            document.body.appendChild(el);
 	        }
 	    }, {
-	        key: 'cancel',
-	        value: function cancel() {
+	        key: 'stop',
+	        value: function stop() {
 	            document.querySelector('.mask-layer').removeAttribute('style');
 	            document.body.removeChild(document.querySelector('.load-wrap'));
 	        }
@@ -112,6 +141,29 @@
 
 	exports.default = Loading;
 
-/***/ }
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
 
-/******/ });
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function getUrlParams(name) {
+	    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+	    var r = window.location.search.substr(1).match(reg);
+	    if (r != null) {
+	        return decodeURI(r[2]);
+	    }
+	    return null;
+	}
+
+	function test() {}
+
+	exports.getUrlParams = getUrlParams;
+	exports.test = test;
+
+/***/ }
+]);

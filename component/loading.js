@@ -5,7 +5,9 @@ class Loading{
             let el = document.createElement('div');
             el.className='mask-layer';
             document.body.appendChild(el);
+            this.masker = el;
         }
+        this.masker = ml;
 
         this.tpl=`
     <ul class="">
@@ -22,15 +24,14 @@ class Loading{
     }
 
     active(){
-        document.querySelector('.mask-layer').style.display= 'block';
-        document.querySelector('.mask-layer').style.opacity= '.7';
+        this.masker.style.cssText = 'opacity:1;display:block';
         let el = document.createElement('div');
         el.className = 'load-wrap';
         el.innerHTML = this.tpl;
         document.body.appendChild(el);
     }
 
-    cancel(){
+    stop(){
         document.querySelector('.mask-layer').removeAttribute('style');
         document.body.removeChild(document.querySelector('.load-wrap'));
     }
