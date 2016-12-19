@@ -46,24 +46,19 @@ $.ajax('../data/hotel.json')
 const template = data =>{
     return `${
         data.map((value,index)=> {
-            return `<dl class="hotel-item" price="${
+            return `<dl class="hotel-item"
+            price="${
                 function(){
-                    
-                    if(value.low_price<10000){
-                        return 100    
-                    }else if(value.low_price<20000){
-                        return 200
-                    }else if(value.low_price<30000){
-                        return 300
-                    }else if(value.low_price<40000){
-                        return 400
-                    }else if(value.low_price<50000){
-                        return 500
-                    }else{
-                        return 1000    
+                    switch(true){
+                        case (value.low_price<10000):return 100;    
+                        case (value.low_price<20000):return 200;
+                        case (value.low_price<30000):return 300;
+                        case (value.low_price<40000):return 400;
+                        case (value.low_price<50000):return 500;
+                        default:return 1000;    
                     }
-                }()                
-            }" stars="${
+                }()}"
+             stars="${
                 function(){
                     switch (value.stars){
                         case '经济型': return 1;
@@ -77,8 +72,8 @@ const template = data =>{
                         case '五星': return 5;
                             break;
                     }
-                }()
-            }">
+                }()}"
+             >
             <dt><img src="../${value.image}" alt=""></dt>
             <dd>
                 <p class="hotel-title">${value.name}</p>
@@ -140,10 +135,9 @@ function screen(flag,filter) {
         let el = $(this);
         let flag = el.parents('.filter-box').attr('class').split(' ')[1];
         let filter = el.parent().attr(flag);
-        screen_items[flag].push(filter)
+        screen_items[flag].push(filter);
     });
 
-    console.log(screen_items);
     let wrap = $('.hotel-list');
     wrap.children().css('display','');
     let str ='';
@@ -153,7 +147,7 @@ function screen(flag,filter) {
         }
     }
     str = str.substring(0,str.length-1);
-    console.log(str);
+    
     wrap.children().not(str).css('display','none');
 }
 
