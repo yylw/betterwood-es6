@@ -4,10 +4,12 @@ class Loading{
         if(!ml){
             let el = document.createElement('div');
             el.className='mask-layer';
+            el.style.opacity = '.7';
             document.body.appendChild(el);
             this.masker = el;
+        }else{
+            this.masker = ml;
         }
-        this.masker = ml;
 
         this.tpl=`
     <ul class="">

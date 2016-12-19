@@ -86,6 +86,10 @@ input:-moz-placeholder {
 
 /*common variable*/
 /*common  mixins*/
+.list .filter-nav span:after, .list .check-box.checked:after {
+  content: '';
+  position: absolute; }
+
 /*common class*/
 html, body {
   width: 100%;
@@ -300,38 +304,113 @@ html, body {
     width: 50%;
     height: 100%;
     text-align: center; }
-.list .hotel-list .hotel-item {
-  padding: 15px 10px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex; }
-  .list .hotel-list .hotel-item dt {
-    height: 70px;
-    width: 70px; }
-    .list .hotel-list .hotel-item dt img {
-      width: 100%;
-      height: 100%; }
-  .list .hotel-list .hotel-item dd {
-    flex: 1;
-    -webkit-flex: 1;
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    padding-left: 10px;
-    line-height: 1.7; }
-    .list .hotel-list .hotel-item dd .hotel-title {
-      font-size: 1rem;
-      color: #333;
-      line-height: 1.1; }
-    .list .hotel-list .hotel-item dd .hotel-score {
-      color: #f88f27; }
-      .list .hotel-list .hotel-item dd .hotel-score .hotel-price {
-        float: right; }
-    .list .hotel-list .hotel-item dd .hotel-grade {
-      color: #777; }
-    .list .hotel-list .hotel-item dd .hotel-location {
-      color: #777; }
-      .list .hotel-list .hotel-item dd .hotel-location .hotel-distance {
-        float: right; }
+.list .hotel-list {
+  background: #ffffff;
+  margin-bottom: 45px; }
+  .list .hotel-list .hotel-item {
+    padding: 15px 10px;
+    border-bottom: 1px solid #ccc;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex; }
+    .list .hotel-list .hotel-item dt {
+      height: 70px;
+      width: 70px; }
+      .list .hotel-list .hotel-item dt img {
+        width: 100%;
+        height: 100%; }
+    .list .hotel-list .hotel-item dd {
+      flex: 1;
+      -webkit-flex: 1;
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      padding-left: 10px;
+      line-height: 1.7; }
+      .list .hotel-list .hotel-item dd .hotel-title {
+        font-size: 1rem;
+        color: #333;
+        line-height: 1.1; }
+      .list .hotel-list .hotel-item dd .hotel-score {
+        color: #f88f27; }
+        .list .hotel-list .hotel-item dd .hotel-score .hotel-price {
+          float: right; }
+      .list .hotel-list .hotel-item dd .hotel-grade {
+        color: #777; }
+      .list .hotel-list .hotel-item dd .hotel-location {
+        color: #777; }
+        .list .hotel-list .hotel-item dd .hotel-location .hotel-distance {
+          float: right; }
+.list .filter-nav {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  height: 45px;
+  width: 100%;
+  border-top: 2px solid #24aef2;
+  background: #ffffff; }
+  .list .filter-nav span {
+    float: left;
+    width: 25%;
+    height: 100%;
+    line-height: 45px;
+    text-align: center;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #fff;
+    display: table-cell;
+    position: relative; }
+    .list .filter-nav span:last-child {
+      border: none; }
+    .list .filter-nav span:after {
+      width: 6px;
+      height: 6px;
+      border: 1px solid #fff;
+      border-right-color: #999;
+      border-bottom-color: #999;
+      right: 12px;
+      top: 50%;
+      transform: rotate(-135deg); }
+  .list .filter-nav span.active {
+    color: #24aef2;
+    border-top-color: #24aef2; }
+    .list .filter-nav span.active:after {
+      border-right-color: #24aef2;
+      border-bottom-color: #24aef2; }
+.list .filter-items {
+  display: none;
+  z-index: 2;
+  width: 400%;
+  height: 225px;
+  background: #ffffff;
+  position: absolute;
+  bottom: 45px; }
+  .list .filter-items .filter-box {
+    float: left;
+    width: 25%;
+    height: 100%;
+    overflow: auto; }
+    .list .filter-items .filter-box p {
+      border-bottom: 1px solid #ccc;
+      height: 45px;
+      line-height: 25px;
+      padding: 12px 10px; }
+.list .check-box {
+  float: right;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #24aef2; }
+.list .check-box.checked {
+  position: relative; }
+  .list .check-box.checked:after {
+    width: 5px;
+    height: 10px;
+    border: 1px solid #fff;
+    border-right-color: #24aef2;
+    border-bottom-color: #24aef2;
+    right: 5px;
+    top: 0;
+    transform: rotate(-135deg); }
+  .list .check-box.checked:after {
+    transform: rotate(45deg); }
 
 /*# sourceMappingURL=list.css.map */

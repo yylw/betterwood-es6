@@ -4,6 +4,10 @@ $baseColor: #999;
 $basebg: #f5f6f5;
 $orange: #f88f27;
 /*common  mixins*/
+%common{
+  content: '';
+  position: absolute;
+}
 @mixin rightArrow($bWidth: 1px,$color:#fff,$bgColor:$baseColor){
   position: relative;
   &:after{
@@ -55,6 +59,21 @@ $orange: #f88f27;
     z-index: 1;
   }
 }
+@mixin up-arrow($bColor:#fff,$w:10px, $h:10px, $color:$baseColor,$right:0,$top:0){
+  position: relative;
+  &:after{
+    width: $w;
+    height:$h;
+    border: 1px solid $bColor;
+    border-right-color: $color;
+    border-bottom-color: $color;
+    right: $right;
+    top: $top;
+    @extend %common;
+    transform: rotate(-135deg);
+  }
+}
+
 @mixin flex{
   display: -webkit-box;
   display: -ms-flexbox;
