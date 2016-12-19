@@ -33,6 +33,7 @@ webpackJsonp([1],[
 	    count: 4
 	});
 
+	(0, _util.test)();
 	$('.list-date-in').html((0, _util.getUrlParams)('dateLiveIn')).on('click', function () {
 	    var el = $(this);
 	    calendar.show(function (data) {
@@ -61,7 +62,22 @@ webpackJsonp([1],[
 	//利用模板字符串定义渲染函数
 	var template = function template(data) {
 	    return ('' + data.map(function (value, index) {
-	        return '<dl class="hotel-item" stars="' + function () {
+	        return '<dl class="hotel-item" price="' + function () {
+
+	            if (value.low_price < 10000) {
+	                return 100;
+	            } else if (value.low_price < 20000) {
+	                return 200;
+	            } else if (value.low_price < 30000) {
+	                return 300;
+	            } else if (value.low_price < 40000) {
+	                return 400;
+	            } else if (value.low_price < 50000) {
+	                return 500;
+	            } else {
+	                return 1000;
+	            }
+	        }() + '" stars="' + function () {
 	            switch (value.stars) {
 	                case '经济型':
 	                    return 1;
@@ -79,7 +95,7 @@ webpackJsonp([1],[
 	                    return 5;
 	                    break;
 	            }
-	        }() + '">\n            <dt><img src="../' + value.image + '" alt=""></dt>\n            <dd>\n                <p class="hotel-title">' + value.name + '</p>\n                <p class="hotel-score"><span>4.7\u5206 <em>\u793C</em> </span><span class="hotel-price">\uFFE5' + value.low_price / 100 + '<sub>\u8D77</sub></span></p>\n                <p class="hotel-grade"><span>' + value.stars + '</span></p>\n                <p class="hotel-location"><span>' + value.addr + '</span><span class="hotel-distance">' + value.distance + 'km</span></p>\n            </dd>\n        </dl>';
+	        }() + '">\n            <dt><img src="../' + value.image + '" alt=""></dt>\n            <dd>\n                <p class="hotel-title">' + value.name + '</p>\n                <p class="hotel-score"><span>4.7\u5206 <em>\u793C</em> </span><span class="hotel-price">\uFFE5' + value.low_price / 100 + '<sub>\u8D77</sub></span></p>\n                <p class="hotel-grade"><span>' + value.stars + '</span></p>\n                 <p class="hotel-location"><span>' + value.addr + '</span><span class="hotel-distance">' + value.distance + 'km</span></p>\n            </dd>\n        </dl>';
 	    }).join('') //map返回一个数组，数组中的每一项是渲染好的list，利用join将所有的list拼接在一起
 	    ).trim(); //去掉模板字符串中的换行以及空格
 	};
@@ -99,17 +115,54 @@ webpackJsonp([1],[
 	});
 	filterBox.on('click', '.check-box', function () {
 	    var el = $(this);
+	    var index = el.parent().index();
 	    if (el.hasClass('checked')) {
 	        el.removeClass('checked');
 	    } else {
 	        el.addClass('checked');
 
-	        var flag = el.parents('.filter-box').attr('class').split(' ')[1];
-	        var filter = el.parent().attr(flag);
-	        $('.hotel-list').children().css('display', '');
-	        $('.hotel-list').children().not('[' + flag + '=' + filter + ']').css('display', 'none');
+	        if (index == 0) {
+	            el.parent().siblings().find('.check-box').removeClass('checked');
+	        } else {
+	            el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+
+	            var flag = el.parents('.filter-box').attr('class').split(' ')[1];
+	            var filter = el.parent().attr(flag);
+
+	            screen(flag, filter);
+	        }
 	    }
 	});
+
+	function screen(flag, filter) {
+	    var filter_item_list = filterBox.find('.checked');
+	    var screen_items = {
+	        stars: [],
+	        price: [],
+	        brand: [],
+	        distance: []
+	    };
+
+	    filter_item_list.each(function (index, value) {
+	        var el = $(this);
+	        var flag = el.parents('.filter-box').attr('class').split(' ')[1];
+	        var filter = el.parent().attr(flag);
+	        screen_items[flag].push(filter);
+	    });
+
+	    console.log(screen_items);
+	    var wrap = $('.hotel-list');
+	    wrap.children().css('display', '');
+	    var str = '';
+	    for (var i in screen_items) {
+	        for (var j = 0; j < screen_items[i].length; j++) {
+	            str += '[' + i + '=' + screen_items[i][j] + ']' + ',';
+	        }
+	    }
+	    str = str.substring(0, str.length - 1);
+	    console.log(str);
+	    wrap.children().not(str).css('display', 'none');
+	}
 
 /***/ },
 /* 1 */,
@@ -151,7 +204,7 @@ webpackJsonp([1],[
 	    _createClass(Loading, [{
 	        key: 'active',
 	        value: function active() {
-	            this.masker.style.cssText = 'opacity:1;display:block';
+	            this.masker.style.cssText = 'opacity:.7;display:block;z-index:10;';
 	            var el = document.createElement('div');
 	            el.className = 'load-wrap';
 	            el.innerHTML = this.tpl;
@@ -189,7 +242,9 @@ webpackJsonp([1],[
 	    return null;
 	}
 
-	function test() {}
+	function test() {
+	    console.log('this is function test, you can do something here...add your code...');
+	}
 
 	exports.getUrlParams = getUrlParams;
 	exports.test = test;

@@ -63,7 +63,7 @@
 
   .filter-nav{
     position: absolute;
-    z-index: 2;
+    z-index: 9;
     bottom: 0;
     height: 45px;
     width: 100%;
@@ -96,7 +96,7 @@
 
   .filter-items{
     display: none;
-    z-index: 2;
+    z-index: 9;
     width: 400%;
     height: 225px;
     background: #ffffff;

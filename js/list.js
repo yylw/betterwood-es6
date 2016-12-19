@@ -13,7 +13,8 @@ let calendar = new Calendar({
     count:4
 });
 
-import {getUrlParams} from '../component/util';
+import {getUrlParams,test} from '../component/util';
+test();
 $('.list-date-in').html(getUrlParams('dateLiveIn')).on('click',function () {
     let el = $(this);
     calendar.show(function (data) {
@@ -45,7 +46,24 @@ $.ajax('../data/hotel.json')
 const template = data =>{
     return `${
         data.map((value,index)=> {
-            return `<dl class="hotel-item" stars="${
+            return `<dl class="hotel-item" price="${
+                function(){
+                    
+                    if(value.low_price<10000){
+                        return 100    
+                    }else if(value.low_price<20000){
+                        return 200
+                    }else if(value.low_price<30000){
+                        return 300
+                    }else if(value.low_price<40000){
+                        return 400
+                    }else if(value.low_price<50000){
+                        return 500
+                    }else{
+                        return 1000    
+                    }
+                }()                
+            }" stars="${
                 function(){
                     switch (value.stars){
                         case '经济型': return 1;
@@ -89,18 +107,55 @@ $('.filter-nav').on('click',"span",function () {
 });
 filterBox.on('click','.check-box',function () {
     let el = $(this);
+    let index = el.parent().index();
     if(el.hasClass('checked')){
         el.removeClass('checked')
     }else{
         el.addClass('checked');
 
-        let flag = el.parents('.filter-box').attr('class').split(' ')[1];
-        let filter = el.parent().attr(flag);
-        $('.hotel-list').children().css('display','');
-        $('.hotel-list').children().not('['+flag+'='+filter+']').css('display','none');
+        if(index==0){
+            el.parent().siblings().find('.check-box').removeClass('checked');
+        }else{
+            el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+
+            let flag = el.parents('.filter-box').attr('class').split(' ')[1];
+            let filter = el.parent().attr(flag);
+
+            screen(flag,filter);
+        }
     }
 });
 
+
+function screen(flag,filter) {
+    let filter_item_list = filterBox.find('.checked');
+    let screen_items = {
+        stars:[],
+        price:[],
+        brand:[],
+        distance:[]
+    };
+
+    filter_item_list.each(function (index, value) {
+        let el = $(this);
+        let flag = el.parents('.filter-box').attr('class').split(' ')[1];
+        let filter = el.parent().attr(flag);
+        screen_items[flag].push(filter)
+    });
+
+    console.log(screen_items);
+    let wrap = $('.hotel-list');
+    wrap.children().css('display','');
+    let str ='';
+    for(let i in screen_items){
+        for(let j=0; j<screen_items[i].length; j++){
+            str+='['+i+'='+screen_items[i][j]+']'+',';
+        }
+    }
+    str = str.substring(0,str.length-1);
+    console.log(str);
+    wrap.children().not(str).css('display','none');
+}
 
 
 

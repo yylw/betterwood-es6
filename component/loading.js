@@ -26,7 +26,7 @@ class Loading{
     }
 
     active(){
-        this.masker.style.cssText = 'opacity:1;display:block';
+        this.masker.style.cssText = 'opacity:.7;display:block;z-index:10;';
         let el = document.createElement('div');
         el.className = 'load-wrap';
         el.innerHTML = this.tpl;

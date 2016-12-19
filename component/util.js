@@ -9,7 +9,7 @@
     }
 
     function test() {
-
+        console.log('this is function test, you can do something here...add your code...')
     }
 
     export {getUrlParams,test}
