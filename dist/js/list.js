@@ -167,9 +167,10 @@ webpackJsonp([1],[
 	            }
 	            filter_collector[i] = filter_collector[i].substring(0, filter_collector[i].length - 1);
 	        }
-	        if (i != 'distance' && filter_collector[i] != '') {
+	        if (i != 'distance') {
+	            if (filter_collector[i] == '') return;
 	            wrap.children().not(filter_collector[i]).css('display', 'none');
-	        } else if (i == 'distance') {
+	        } else {
 	            if (filter_collector['distance'] == '') return;
 	            var arr = Array.from(wrap.children());
 	            if (filter_collector['distance'].indexOf('1') > -1) {
