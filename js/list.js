@@ -158,17 +158,17 @@ function screen() {
             filter_collector[i] = filter_collector[i].substring(0,filter_collector[i].length-1);
         }
         if(i!='distance'){
-            if(filter_collector[i]=='')return;
+            if(filter_collector[i]=='')continue;//此处不能用return，这样会终止for循环
             wrap.children().not(filter_collector[i]).css('display','none');
         }else{
             if(filter_collector['distance']=='')return;
             let arr = Array.from(wrap.children());
-            if(filter_collector['distance'].indexOf('1')>-1){
+            if(filter_collector['distance'].indexOf('1')>-1){//由近到远
                 arr = arr.sort(function (a,b) {
                     return a.getAttribute('distance') - b.getAttribute('distance')
                 })
             }else{
-                arr = arr.sort(function (a,b) {
+                arr = arr.sort(function (a,b) {//由远到近
                     return b.getAttribute('distance') - a.getAttribute('distance')
                 })
             }
