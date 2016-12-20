@@ -62,22 +62,22 @@ webpackJsonp([1],[
 	//利用模板字符串定义渲染函数
 	var template = function template(data) {
 	    return ('' + data.map(function (value, index) {
-	        return '<dl class="hotel-item" price="' + function () {
-
-	            if (value.low_price < 10000) {
-	                return 100;
-	            } else if (value.low_price < 20000) {
-	                return 200;
-	            } else if (value.low_price < 30000) {
-	                return 300;
-	            } else if (value.low_price < 40000) {
-	                return 400;
-	            } else if (value.low_price < 50000) {
-	                return 500;
-	            } else {
-	                return 1000;
+	        return '<dl class="hotel-item"\n            price="' + function () {
+	            switch (true) {
+	                case value.low_price < 10000:
+	                    return 100;
+	                case value.low_price < 20000:
+	                    return 200;
+	                case value.low_price < 30000:
+	                    return 300;
+	                case value.low_price < 40000:
+	                    return 400;
+	                case value.low_price < 50000:
+	                    return 500;
+	                default:
+	                    return 1000;
 	            }
-	        }() + '" stars="' + function () {
+	        }() + '"\n             stars="' + function () {
 	            switch (value.stars) {
 	                case '经济型':
 	                    return 1;
@@ -95,7 +95,7 @@ webpackJsonp([1],[
 	                    return 5;
 	                    break;
 	            }
-	        }() + '">\n            <dt><img src="../' + value.image + '" alt=""></dt>\n            <dd>\n                <p class="hotel-title">' + value.name + '</p>\n                <p class="hotel-score"><span>4.7\u5206 <em>\u793C</em> </span><span class="hotel-price">\uFFE5' + value.low_price / 100 + '<sub>\u8D77</sub></span></p>\n                <p class="hotel-grade"><span>' + value.stars + '</span></p>\n                 <p class="hotel-location"><span>' + value.addr + '</span><span class="hotel-distance">' + value.distance + 'km</span></p>\n            </dd>\n        </dl>';
+	        }() + '"\n             brand="' + value.name + '"\n             distance="' + value.distance + '"\n             >\n            <dt><img src="../' + value.image + '" alt=""></dt>\n            <dd>\n                <p class="hotel-title">' + value.name + '</p>\n                <p class="hotel-score"><span>4.7\u5206 <em>\u793C</em> </span><span class="hotel-price">\uFFE5' + value.low_price / 100 + '<sub>\u8D77</sub></span></p>\n                <p class="hotel-grade"><span>' + value.stars + '</span></p>\n                 <p class="hotel-location"><span>' + value.addr + '</span><span class="hotel-distance">' + value.distance + 'km</span></p>\n            </dd>\n        </dl>';
 	    }).join('') //map返回一个数组，数组中的每一项是渲染好的list，利用join将所有的list拼接在一起
 	    ).trim(); //去掉模板字符串中的换行以及空格
 	};
@@ -116,25 +116,30 @@ webpackJsonp([1],[
 	filterBox.on('click', '.check-box', function () {
 	    var el = $(this);
 	    var index = el.parent().index();
-	    if (el.hasClass('checked')) {
-	        el.removeClass('checked');
-	    } else {
-	        el.addClass('checked');
-
-	        if (index == 0) {
-	            el.parent().siblings().find('.check-box').removeClass('checked');
+	    var type = el.parent().parent().hasClass('distance') ? 'distance' : '';
+	    if (type != 'distance') {
+	        if (el.hasClass('checked')) {
+	            el.removeClass('checked');
 	        } else {
-	            el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+	            el.addClass('checked');
 
-	            var flag = el.parents('.filter-box').attr('class').split(' ')[1];
-	            var filter = el.parent().attr(flag);
-
-	            screen(flag, filter);
+	            if (index == 0) {
+	                el.parent().siblings().find('.check-box').removeClass('checked');
+	            } else {
+	                el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+	            }
+	        }
+	    } else {
+	        if (!el.hasClass('checked')) {
+	            el.addClass('checked');
+	            el.parent().siblings().find('.check-box').removeClass('checked');
 	        }
 	    }
+
+	    screen();
 	});
 
-	function screen(flag, filter) {
+	function screen() {
 	    var filter_item_list = filterBox.find('.checked');
 	    var screen_items = {
 	        stars: [],
@@ -142,26 +147,46 @@ webpackJsonp([1],[
 	        brand: [],
 	        distance: []
 	    };
-
+	    //收集所有的筛选信息
 	    filter_item_list.each(function (index, value) {
 	        var el = $(this);
 	        var flag = el.parents('.filter-box').attr('class').split(' ')[1];
 	        var filter = el.parent().attr(flag);
-	        screen_items[flag].push(filter);
+	        if (filter) screen_items[flag].push(filter);
 	    });
 
-	    console.log(screen_items);
 	    var wrap = $('.hotel-list');
-	    wrap.children().css('display', '');
-	    var str = '';
+	    wrap.children().css('display', ''); //在隐藏那些不要的item之前先重置一下，防止叠加
+	    var filter_collector = {};
+	    //把收集到的信息 转换成jq的属性选择器 的字符串
 	    for (var i in screen_items) {
-	        for (var j = 0; j < screen_items[i].length; j++) {
-	            str += '[' + i + '=' + screen_items[i][j] + ']' + ',';
+	        filter_collector[i] = '';
+	        if (screen_items[i].length > 0) {
+	            for (var j = 0; j < screen_items[i].length; j++) {
+	                filter_collector[i] += '[' + i + '=' + screen_items[i][j] + ']' + ',';
+	            }
+	            filter_collector[i] = filter_collector[i].substring(0, filter_collector[i].length - 1);
+	        }
+	        if (i != 'distance' && filter_collector[i] != '') {
+	            wrap.children().not(filter_collector[i]).css('display', 'none');
+	        } else if (i == 'distance') {
+	            if (filter_collector['distance'] == '') return;
+	            var arr = Array.from(wrap.children());
+	            if (filter_collector['distance'].indexOf('1') > -1) {
+	                arr = arr.sort(function (a, b) {
+	                    return a.getAttribute('distance') - b.getAttribute('distance');
+	                });
+	            } else {
+	                arr = arr.sort(function (a, b) {
+	                    return b.getAttribute('distance') - a.getAttribute('distance');
+	                });
+	            }
+	            for (var _i = 0; _i < arr.length; _i++) {
+	                wrap.append(arr[_i]);
+	            }
 	        }
 	    }
-	    str = str.substring(0, str.length - 1);
-	    console.log(str);
-	    wrap.children().not(str).css('display', 'none');
+	    console.log(filter_collector);
 	}
 
 /***/ },

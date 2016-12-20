@@ -73,6 +73,8 @@ const template = data =>{
                             break;
                     }
                 }()}"
+             brand="${value.name}"
+             distance="${value.distance}"
              >
             <dt><img src="../${value.image}" alt=""></dt>
             <dd>
@@ -103,26 +105,31 @@ $('.filter-nav').on('click',"span",function () {
 filterBox.on('click','.check-box',function () {
     let el = $(this);
     let index = el.parent().index();
-    if(el.hasClass('checked')){
-        el.removeClass('checked')
-    }else{
-        el.addClass('checked');
-
-        if(index==0){
-            el.parent().siblings().find('.check-box').removeClass('checked');
+    let type = el.parent().parent().hasClass('distance')? 'distance':'';
+    if(type != 'distance'){
+        if(el.hasClass('checked')){
+            el.removeClass('checked')
         }else{
-            el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+            el.addClass('checked');
 
-            let flag = el.parents('.filter-box').attr('class').split(' ')[1];
-            let filter = el.parent().attr(flag);
-
-            screen(flag,filter);
+            if(index==0){
+                el.parent().siblings().find('.check-box').removeClass('checked');
+            }else{
+                el.parents('.filter-box').children().eq(0).find('.check-box').removeClass('checked');
+            }
+        }
+    }else{
+        if(!el.hasClass('checked')){
+            el.addClass('checked');
+            el.parent().siblings().find('.check-box').removeClass('checked');
         }
     }
+
+    screen();
 });
 
 
-function screen(flag,filter) {
+function screen() {
     let filter_item_list = filterBox.find('.checked');
     let screen_items = {
         stars:[],
@@ -130,25 +137,47 @@ function screen(flag,filter) {
         brand:[],
         distance:[]
     };
-
+    //收集所有的筛选信息
     filter_item_list.each(function (index, value) {
         let el = $(this);
         let flag = el.parents('.filter-box').attr('class').split(' ')[1];
         let filter = el.parent().attr(flag);
-        screen_items[flag].push(filter);
+        if(filter) screen_items[flag].push(filter);
     });
 
     let wrap = $('.hotel-list');
-    wrap.children().css('display','');
-    let str ='';
+    wrap.children().css('display','');//在隐藏那些不要的item之前先重置一下，防止叠加
+    let filter_collector={};
+    //把收集到的信息 转换成jq的属性选择器 的字符串
     for(let i in screen_items){
-        for(let j=0; j<screen_items[i].length; j++){
-            str+='['+i+'='+screen_items[i][j]+']'+',';
+        filter_collector[i]='';
+        if(screen_items[i].length>0){
+            for(let j=0; j<screen_items[i].length; j++){
+                filter_collector[i]+='['+i+'='+screen_items[i][j]+']'+',';
+            }
+            filter_collector[i] = filter_collector[i].substring(0,filter_collector[i].length-1);
+        }
+        if(i!='distance' && filter_collector[i]!=''){
+            wrap.children().not(filter_collector[i]).css('display','none');
+        }else if(i == 'distance'){
+            if(filter_collector['distance']=='')return;
+            let arr = Array.from(wrap.children());
+            if(filter_collector['distance'].indexOf('1')>-1){
+                arr = arr.sort(function (a,b) {
+                    return a.getAttribute('distance') - b.getAttribute('distance')
+                })
+            }else{
+                arr = arr.sort(function (a,b) {
+                    return b.getAttribute('distance') - a.getAttribute('distance')
+                })
+            }
+            for(let i=0; i<arr.length; i++){
+                wrap.append(arr[i])
+            }
         }
     }
-    str = str.substring(0,str.length-1);
-    
-    wrap.children().not(str).css('display','none');
+    console.log(filter_collector);
+
 }
 
 
